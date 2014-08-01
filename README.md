@@ -60,8 +60,8 @@ Default: `true`
 
 This will show the _select all_ checkbox in the header. It is a convenience checkbox to allow for quick selecting of the whole visible record set
 
-#### allSelected
+#### toggleSelected
 Type: `Boolean`
 Default: `false`
 
-By default no records are selected, but setting this to true will have all records selected on initial display
+By default no records are selected, but setting this to true will mark all visible records as selected.
