@@ -5,14 +5,17 @@ export default Em.Component.extend({
   layoutName: 'components/filter-table',
   selectedRecords: Em.A([]),
   updateSelectedRecords: function() {
-    var sr = this.get('selectedRecords');
-    sr.clear();
-    sr.addObjects(this.get('filteredRecords').filterBy('selected', true));
-    return sr;
+    var sr = this.get('selectedRecords'),
+        fr = this.get('filteredRecords');
+    Em.run.once(function() {
+      sr.clear();
+      sr.addObjects(fr.filterBy('selected', true));
+      Em.debug("Selected: %@".fmt(sr.get('length')));
+    });
   }.observes('filteredRecords.@each.selected'),
   loadSelectedRecordsOnController: function() {
     var to = this.get('targetObject');
-    if (Em.isBlank(to)) {
+    if (to === undefined || to === null) {
       Em.debug("WARNING: no target object found. Are we testing?");
       return;
     }

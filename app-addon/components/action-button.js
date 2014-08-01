@@ -11,19 +11,14 @@ export default Em.Component.extend({
   selectedClass: function() {
     var c = (this.get('isButtonActive') === true) ?
            this.get('activeClass') : 'btn-default';
-    if (this.get('hash.isSet') === true) {
+    if (this.get('isSet') === true) {
       c += ' active';
     }
     return c;
-  }.property('isButtonActive', 'hash.isSet'),
+  }.property('isButtonActive', 'isSet'),
 
   /* User variables */
-  activeClass: function() {
-    if (!Em.isBlank(this.get('hash.activeClass'))) {
-      return this.get('hash.activeClass');
-    }
-    return 'btn-primary';
-  }.property('hash'),
+  activeClass: 'btn-primary',
   isButtonActive: function() {
     var key = this.get('buttonToggleName');
     return Em.isBlank(key) ? true : this.get(key);
@@ -48,12 +43,7 @@ export default Em.Component.extend({
   hasGlyph: function() {
     return (!Em.isBlank(this.get('glyphicon')));
   }.property('glyphicon'),
-  action: function() {
-    if (!Em.isBlank(this.get('hash.action'))) {
-      return this.get('hash.action');
-    }
-    return null;
-  }.property('hash'),
+  action: null,
   click: function() {
     if (Em.isBlank(this.get('action'))) {
       Em.debug("No action defined for " + this.get('title'));
