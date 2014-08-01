@@ -12,6 +12,10 @@ export default Em.Component.extend({
   }.observes('filteredRecords.@each.selected'),
   loadSelectedRecordsOnController: function() {
     var to = this.get('targetObject');
+    if (Em.isBlank(to)) {
+      Em.debug("WARNING: no target object found. Are we testing?");
+      return;
+    }
     if (Em.isBlank(to.get('selectedRecords'))) {
       this.set('targetObject.selectedRecords', this.get('selectedRecords'));
     }
@@ -29,7 +33,6 @@ export default Em.Component.extend({
   filterField: 'name',
 
   /* Checkbox select/deselect all logic */
-  allSelected: false,
   showCheckboxes: true,
   noneSelected: function() {
     return this.get('selectedRecords.length') < 1;
@@ -40,19 +43,40 @@ export default Em.Component.extend({
   oneOrMoreSelected: function() {
     return this.get('selectedRecords.length') > 0;
   }.property('selectedRecords.@each'),
+  allSelected: function() {
+    return this.get('selectedRecords.length') ===
+           this.get('filteredRecords.length');
+  }.property('selectedRecords.@each', 'filteredRecords.@each'),
 
   filterOptions: Em.A([]),  // Filter options for the table (dropdown) in (text,query) format
   selectedFilter: null, // Currently selected dropdown option
   filteredRecords: Em.A([]), // Displayed records
   toggleAllSelection: function() {
-    var selected = this.get('allSelected'),
-        records = this.get('filteredRecords');
+    // If any filtered records are selected, it deselects all,
+    // else it selects all filtered records. If records that are not visible
+    // are selected, then they are unselected in the background
+    var fRecords = this.get('filteredRecords'),
+        sRecords = this.get('selectedRecords'),
+        aRecords = this.get('content').filterBy('selected', true);
     Em.run.once(function() {
-      records.forEach(function(r) {
-        r.set('selected', selected);
-      });
+      // if any records are selected, we deselect all selected records
+      if (sRecords.get('length') > 0) {
+        aRecords.forEach(function(r) {
+          r.set('selected', false);
+        });
+      } else {
+        if (aRecords.get('length') > 0 && sRecords.get('length') < 1) {
+          // deselect hidden records before we select all visible records
+          aRecords.forEach(function(r) {
+            r.set('selected', false);
+          });
+        }
+        fRecords.forEach(function(r) {
+          r.set('selected', true);
+        });
+      }
     });
-  }.observes('allSelected'),
+  }.observes('toggleSelection'),
   hasNoFilteredRecords: function() {
     return this.get('filteredRecords.length') < 1;
   }.property('filteredRecords.@each'),
@@ -60,16 +84,19 @@ export default Em.Component.extend({
     return this.get('content').get('length') < 1;
   }.property('content.@each'),
   deselectAll: function() {
-    if (this.get('allSelected') === false) {
+    var sRecords = this.get('selectedRecords');
+    if (sRecords.get('length') > 1) {
       this.toggleAllSelection();
     } else {
-      this.set('allSelected', false);
+      Em.run.once(function() {
+        // mark visible records as selected
+        sRecords.forEach(function(r) {
+          r.set('selected', false);
+        });
+      });
       Em.$('thead:first th:first input').prop('checked', false);
     }
   },
-  recordsSelected: function() {
-    return this.get('selectedRecords').get('length') > 0;
-  }.property('selectedRecords'),
   applyTextFilter: function(ac) {
     var filter = this.get('textFilter');
     if (!Em.isBlank(filter)) {
@@ -91,11 +118,14 @@ export default Em.Component.extend({
   },
   loadRecords: function() {
     Em.debug('Refreshing visible records');
-    var ac = this.get('arrangedContent') || this.get('content.arrangedContent');
+    var ac = this.get('arrangedContent') ||
+             this.get('content.arrangedContent') ||
+             this.get('content');
     if (Em.isEmpty(ac)) {
       this.set('filteredRecords', []);
       return;
     }
+    ac = ac.toArray();  // make copy of the content record
     ac = this.applyTextFilter(ac);
     ac = this.applyDropdownFilter(ac);
     Em.debug("Showing filteredRecords");
@@ -106,6 +136,9 @@ export default Em.Component.extend({
     this.set('filteredRecords', Em.A(ac));
   }.observes('textFilter', 'selectedFilter', 'filterOptions.@each.selection'),
   loadOnContentChange: function() {
+    if (Em.isEmpty(this.get('content'))) {
+      return;
+    }
     Em.run.once(this, 'loadRecords');
   }.on('init').observes('content.@each')
 });

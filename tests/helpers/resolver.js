@@ -3,7 +3,7 @@ import Resolver from 'ember/resolver';
 var resolver = Resolver.create();
 
 resolver.namespace = {
-  modulePrefix: 'filtertable'
+  modulePrefix: 'ember-cli-filtertable'
 };
 
 export default resolver;

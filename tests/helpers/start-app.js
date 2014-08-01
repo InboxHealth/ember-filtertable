@@ -1,7 +1,7 @@
 /* global require */
 
-var Application = require('filtertable/app')['default'];
-var Router = require('filtertable/router')['default'];
+var Application = require('ember-cli-filtertable/app')['default'];
+var Router = require('ember-cli-filtertable/router')['default'];
 
 export default function startApp(attrs) {
   var App;
