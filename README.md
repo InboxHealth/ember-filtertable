@@ -39,7 +39,7 @@ The field in each record on which to apply the text filtering
 
 ### Checkbox options
 
-#### hasCheckboxes
+#### showCheckboxes
 Type: `Boolean`
 Default: `true`
 
