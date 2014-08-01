@@ -8,10 +8,10 @@ This component is an Ember CLI add-on which presents a standard html table but a
 ## Installation
 npm install ember-cli-filtertable --save-dev
 
-##Usage
+##Basic Usage
 
-    {{#filter-table}}{{! Your data here -- TODO}}{{/filter-table}}
-    
+  {{filter-table content=content bodyTemplate="mytable-body" headerTemplate="mytable-header"}}
+
 ## Options
 When calling the filter table, the following options are available:
 
@@ -22,6 +22,21 @@ Type: `Number`
 Default: `20`
 
 This is the number of maximum records that will be shown in the table.
+
+#### columnNum
+Type: `Number`
+Default: `2`
+
+This is the number of columns within the table. It is needed to calculate the
+header colspan attribute.
+
+#### selectedRecords
+Type: `Array`
+Default: `selectedRecords`
+
+This option is only needed when implementing logic that needs to know how many
+records are selected. By default, it will use the `selectedRecords` field on
+the controller if it hasn't been defined at startup.
 
 ### Text Filter Options
 
