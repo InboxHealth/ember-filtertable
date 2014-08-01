@@ -2,7 +2,7 @@ import Em from 'ember';
 
 export default Em.Component.extend({
   /* System settings */
-  layoutName: 'components/filter-table-layout',
+  layoutName: 'components/filter-table',
   selectedRecords: Em.A([]),
   updateSelectedRecords: function() {
     var sr = this.get('selectedRecords');

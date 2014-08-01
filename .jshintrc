@@ -2,7 +2,7 @@
   "predef": {
     "document": true,
     "window": true,
-    "FiltertableENV": true
+    "EmberFiltertableENV": true
   },
   "browser" : true,
   "boss" : true,

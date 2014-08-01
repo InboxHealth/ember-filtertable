@@ -1,10 +1,10 @@
-import Em from 'ember';
+import Ember from 'ember';
 import Resolver from 'ember/resolver';
 import loadInitializers from 'ember/load-initializers';
 
-Em.MODEL_FACTORY_INJECTIONS = true;
+Ember.MODEL_FACTORY_INJECTIONS = true;
 
-var App = Em.Application.extend({
+var App = Ember.Application.extend({
   modulePrefix: 'ember-cli-filtertable', // TODO: loaded via config
   Resolver: Resolver
 });

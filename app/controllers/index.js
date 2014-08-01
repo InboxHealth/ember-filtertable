@@ -14,6 +14,9 @@ export default Em.ArrayController.extend({
     return this.get('selectedRecords.length') === 2;
   }.property('selectedRecords.@each'),
   actions: {
+    clickedNone: function() {
+      Em.debug("Clicked on NONE button");
+    },
     clickedOne: function() {
       Em.debug("Clicked on ONE button");
     },

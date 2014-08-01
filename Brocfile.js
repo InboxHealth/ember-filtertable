@@ -11,6 +11,7 @@ var app = new EmberApp({
     vendor: vendorTree
   }
 });
+
 app.import('vendor/ember-cli-filtertable/styles/style.css');
 
 // Use `app.import` to add additional libraries to the generated

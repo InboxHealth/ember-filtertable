@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Filtertable</title>
+    <title>Ember CLI Filtertable</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -14,13 +14,13 @@
   </head>
   <body>
     <script>
-      window.FiltertableENV = {{ENV}};
-      window.EmberENV = window.FiltertableENV.EmberENV;
+      window.EmberFiltertableENV = {{ENV}};
+      window.EmberENV = window.EmberFiltertableENV.EmberENV;
     </script>
     <script src="assets/vendor.js"></script>
     <script src="assets/ember-cli-filtertable.js"></script>
     <script>
-      window.Filtertable = require('ember-cli-filtertable/app')['default'].create(FiltertableENV.APP);
+      window.EmberFiltertable = require('ember-cli-filtertable/app')['default'].create(EmberFiltertableENV.APP);
     </script>
   </body>
 </html>
