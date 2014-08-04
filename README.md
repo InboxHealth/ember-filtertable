@@ -65,3 +65,18 @@ Type: `Boolean`
 Default: `false`
 
 By default no records are selected, but setting this to true will mark all visible records as selected.
+
+## Table rows
+Since table rows aren't called directly anymore, but rather via the component,
+any defined actions won't actually call the controller.  We've added 5 proxies
+to the component which will call an action on the component. They are called:
+
+    submit, remove, action1, action2, action3
+
+To get them to work correctly, you'll need to define the action as follows:
+
+
+    <td {{action "remove" "removeRow" r}}>(remove)</td>
+
+That definition will call the `removeRow` action on the controller with the
+current record.

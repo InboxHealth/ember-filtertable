@@ -143,5 +143,15 @@ export default Em.Component.extend({
       return;
     }
     Em.run.once(this, 'loadRecords');
-  }.on('init').observes('content.@each')
+  }.on('init').observes('content.@each'),
+  actions: {
+    // custom actions which the user can implement. Its a direct link to a
+    // controller action handler
+    submit: function(actionName, record) {
+      this.get('targetObject').send(actionName, record);
+    },
+    remove: function(actionName, record) {
+      this.get('targetObject').send(actionName, record);
+    }
+  }
 });

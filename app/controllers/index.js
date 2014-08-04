@@ -25,6 +25,11 @@ export default Em.ArrayController.extend({
     },
     clickedCustom: function() {
       Em.debug("Clicked on CUSTOM button");
+    },
+    removeRow: function(record) {
+      Em.debug("Removing selected record");
+      this.get('content').removeObject(record);
+      record.destroy();
     }
   }
 });
