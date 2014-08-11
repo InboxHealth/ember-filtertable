@@ -3,6 +3,8 @@ import Em from 'ember';
 export default Em.Component.extend({
   /* System settings */
   layoutName: 'components/filter-table',
+  selectAll: false,  // select-all button off by default
+  deselectAll: false,  // toggle for deselecting all (w/o all being selected)
   selectedRecords: Em.A([]),
   updateSelectedRecords: function() {
     var sr = this.get('selectedRecords'),
@@ -55,51 +57,73 @@ export default Em.Component.extend({
   selectedFilter: null, // Currently selected dropdown option
   filteredRecords: Em.A([]), // Displayed records
   toggleAllSelection: function() {
-    // If any filtered records are selected, it deselects all,
-    // else it selects all filtered records. If records that are not visible
-    // are selected, then they are unselected in the background
+    // Called when selectAll checkbox is toggled and ensures all records'
+    // selection status matches that decreed by the select-all button
     var fRecords = this.get('filteredRecords'),
         sRecords = this.get('selectedRecords'),
         aRecords = this.get('content').filterBy('selected', true);
-    Em.run.once(function() {
-      // if any records are selected, we deselect all selected records
-      if (sRecords.get('length') > 0) {
+    Em.debug("Select-all checkbox selected? %@".fmt(this.get('selectAll')));
+    Em.run.once(this, function() {
+      if (this.get('selectAll') === true) {
+        // Select-all button checked, ensure that all visible records are
+        // selected, and invisible records are unchecked
+        if (sRecords.get('length') === fRecords.get('length')) {
+          // all records are already selected
+          return;
+        }
+        // unselecting hidden records, and select all visible records
         aRecords.forEach(function(r) {
           r.set('selected', false);
         });
+        fRecords.forEach(function(r) {
+          r.set('selected', true);
+        });
       } else {
-        if (aRecords.get('length') > 0 && sRecords.get('length') < 1) {
-          // deselect hidden records before we select all visible records
+        // select-all is unchecked, so lets unselect all if all visible records
+        // are selected
+        if (sRecords.get('length') === fRecords.get('length')) {
+          // deselect-all since all are selected
           aRecords.forEach(function(r) {
             r.set('selected', false);
           });
         }
-        fRecords.forEach(function(r) {
-          r.set('selected', true);
-        });
       }
     });
-  }.observes('toggleSelection'),
+  }.observes('selectAll'),
+  toggleSelectAllCheckbox: function() {
+    Em.run.once(this, function() {
+      var as = this.get('allSelected'), sa = this.get('selectAll');
+      if (as !== sa) {
+        Em.debug("Set select-all checkbox to table state");
+        this.set('selectAll', as);
+      }
+    });
+  }.observes('selectedRecords.@each'),
+  deselectAllRecords: function() {
+    if (this.get('deselectAll') !== true) {
+      // only run this when deselectAll is set to true. it is automatically
+      // returned to false once everything has been deselected;
+      return;
+    }
+    // Explicitly deselect all. Just setting selectAll to false isn't
+    // sufficient since not all records may be selected at this point
+    if (this.get('selectAll') === true) {
+      // all records are selected, so we can simply deselect them all
+      this.set('selectAll', false);
+    } else {
+      var aRecords = this.get('content').filterBy('selected', true);
+      aRecords.forEach(function(r) {
+        r.set('selected', false);
+      });
+    }
+    this.set('deselectAll', false);
+  }.observes('deselectAll'),
   hasNoFilteredRecords: function() {
     return this.get('filteredRecords.length') < 1;
   }.property('filteredRecords.@each'),
   hasNoActualRecords: function() {
     return this.get('content').get('length') < 1;
   }.property('content.@each'),
-  deselectAll: function() {
-    var sRecords = this.get('selectedRecords');
-    if (sRecords.get('length') > 1) {
-      this.toggleAllSelection();
-    } else {
-      Em.run.once(function() {
-        // mark visible records as selected
-        sRecords.forEach(function(r) {
-          r.set('selected', false);
-        });
-      });
-      Em.$('thead:first th:first input').prop('checked', false);
-    }
-  },
   applyTextFilter: function(ac) {
     var filter = this.get('textFilter');
     if (!Em.isBlank(filter)) {
