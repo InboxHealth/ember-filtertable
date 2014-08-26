@@ -53,8 +53,6 @@ export default Em.Component.extend({
            this.get('filteredRecords.length');
   }.property('selectedRecords.@each', 'filteredRecords.@each'),
 
-  filterOptions: Em.A([]),  // Filter options for the table (dropdown) in (text,query) format
-  selectedFilter: null, // Currently selected dropdown option
   filteredRecords: Em.A([]), // Displayed records
   toggleAllSelection: function() {
     // Called when selectAll checkbox is toggled and ensures all records'
@@ -139,12 +137,13 @@ export default Em.Component.extend({
     }
     return ac;
   },
-  applyDropdownFilter: function(ac) {
-    Em.debug("No implemented dropdown filter");
-    return ac;
-  },
   loadRecords: function() {
     Em.debug('Refreshing visible records');
+    if (this.get('_ignoreReload') === true) {
+      Em.debug("Don't reload for targetObject.reload value change");
+      this.set('_ignoreReload', false);
+      return;
+    }
     var ac = this.get('arrangedContent') ||
              this.get('content.arrangedContent') ||
              this.get('content');
@@ -154,14 +153,20 @@ export default Em.Component.extend({
     }
     ac = ac.toArray();  // make copy of the content record
     ac = this.applyTextFilter(ac);
-    ac = this.applyDropdownFilter(ac);
+    if (!Em.isBlank(this.get('targetObject.applyDropdownFilter'))) {
+      ac = this.get('targetObject').applyDropdownFilter(ac);
+    }
     Em.debug("Showing filteredRecords");
     if (ac.get('length') > this.get('viewLimit')) {
       Em.debug("\tChopping records to viewLimit");
       ac = ac.splice(0, this.get('viewLimit'));
     }
     this.set('filteredRecords', Em.A(ac));
-  }.observes('textFilter', 'selectedFilter', 'filterOptions.@each.selection'),
+    if (this.get('reloadRecords') === true) {
+      this.set('_ignoreReload', true);
+      this.set('reloadRecords', false);
+    }
+  }.observes('textFilter', 'reloadRecords'),
   loadOnContentChange: function() {
     if (Em.isEmpty(this.get('content'))) {
       return;

@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-filtertable",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "A HTML table with some added controls",
   "ember-addon-main": "lib/ember-cli-filtertable.js",
   "keywords": [

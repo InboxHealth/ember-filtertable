@@ -1,4 +1,4 @@
-<th colspan="3">
+<th colspan="2">
   {{action-button title="Active on many" glyphicon="glyphicon-tag"
                   action="clickedMany" isActive="oneOrMoreSelected"}}
   {{action-button title="Active on one" glyphicon="glyphicon-tags"
@@ -10,4 +10,17 @@
   {{action-button title="Active on custom" glyphicon="glyphicon-star"
                   action="clickedCustom" activeClass="btn-warning"
                   isActive="customBtnActive"}}
+
+  <td class="pull-right">
+    <span class="pull-left">
+      {{view Ember.Select content=targetObject.activeFilterOptions
+                          selection=targetObject.activeFilter
+                          class="spec-activeDropdown form-control"}}
+    </span>
+    <span class="pull-left">
+      {{view Ember.Select content=targetObject.genderFilterOptions
+                          selection=targetObject.genderFilter
+                          class="spec-genderDropdown form-control"}}
+    </span>
+  </td>
 </th>

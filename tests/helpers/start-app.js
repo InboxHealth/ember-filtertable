@@ -1,4 +1,5 @@
 /* global require */
+import selectOption from './select-option';
 
 var Application = require('ember-cli-filtertable/app')['default'];
 var Router = require('ember-cli-filtertable/router')['default'];

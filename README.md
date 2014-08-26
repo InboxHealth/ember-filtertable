@@ -3,7 +3,10 @@
 __Note__: This is very much still a work in progress. Use at own risk
 
 ## Description
-This component is an Ember CLI add-on which presents a standard html table but allows for extra options. It includes a text input box for easy filtereing, as well as hooks for dropdown filtering. It also allows for extra buttons in the header which can activate/deactivate based on selections in the table.
+This component is an Ember CLI add-on which presents a standard html table but
+allows for extra options. It includes a text input box for easy filtering, as
+well as hooks for dropdown filtering. It also allows for extra buttons in the
+header which can activate/deactivate based on selections in the table.
 
 ## Installation
 npm install ember-cli-filtertable --save-dev
@@ -37,6 +40,15 @@ Default: `selectedRecords`
 This option is only needed when implementing logic that needs to know how many
 records are selected. By default, it will use the `selectedRecords` field on
 the controller if it hasn't been defined at startup.
+
+#### reloadRecords
+Type: `Boolean`
+
+Link this value to a variable in the controller to be able to refresh the table
+at will. This is particularly useful if one wants to implement some table
+filters (ie dropdown filters) and update the table after the filter has been
+selected. This value is reset to `false` every time the table is refreshed
+manually.
 
 ### Text Filter Options
 
@@ -80,3 +92,12 @@ To get them to work correctly, you'll need to define the action as follows:
 
 That definition will call the `removeRow` action on the controller with the
 current record.
+
+
+## Within the controller
+
+The controller must implement the `applyDropdownFilter` function which will be
+called when the records are generated and filtered. This method doesn't have to
+be defined. If it is defined, it receives an array of records that match the
+text filter, and should return an array which has all the custom filtering
+applied.
