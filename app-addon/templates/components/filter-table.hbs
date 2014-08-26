@@ -1,14 +1,15 @@
-<table class="table table-striped table-hovered">
+<table class="table table-striped table-hovered filtertable">
 <thead>
 {{#if showTextFilter}}
-  <tr><th {{bind-attr colspan=headerFilterColspan}} class="checkbox-all">
+  <tr><th {{bind-attr colspan=headerFilterColspan}}>
     {{input type="text" value=textFilter autofocus="autofocus"
             placeholder="Enter search filter" class="form-control"}}
   </th></tr>
 {{/if}}
 <tr>
 {{#if showCheckboxes}}
-  <th>{{input type="checkbox" name="allSelected" checked=selectAll}}</th>
+  <th class="checkbox-all">{{input type="checkbox" name="allSelected"
+                                   checked=selectAll}}</th>
 {{/if}}
   {{partial headerTemplate}}
 </tr>

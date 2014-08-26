@@ -50,6 +50,26 @@ filters (ie dropdown filters) and update the table after the filter has been
 selected. This value is reset to `false` every time the table is refreshed
 manually.
 
+#### isTree
+Type: `Boolean`
+Default: false
+
+When this is set, the table will assume the data is in a tree view. For this
+to work the data must have the following fields defined:
+
+- parent - a belongsTo relationship containing the parent record
+- children - a hasMany relationship to all its children
+- depth - the depth of the record in the tree (1 being a root node)
+- childNum - returns a count of the number of children a record has
+
+#### showSearchAncestors
+Type: `Boolean`
+Default: true
+
+With this selection activated the whole line of ancestry is shown in the table
+if the search filter matches a child. To only display the child record, set
+this to `false`.
+
 ### Text Filter Options
 
 #### showTextFilter
@@ -78,6 +98,7 @@ Default: `false`
 
 By default no records are selected, but setting this to true will mark all visible records as selected.
 
+
 ## Table rows
 Since table rows aren't called directly anymore, but rather via the component,
 any defined actions won't actually call the controller.  We've added 5 proxies
@@ -93,6 +114,14 @@ To get them to work correctly, you'll need to define the action as follows:
 That definition will call the `removeRow` action on the controller with the
 current record.
 
+
+## Tree view
+The table can be setup to display a tree view of records.  Since this adds
+quite a bit of overhead, it needs to be enabled with the property `isTree`.
+
+__Note:__ At this point, the whole tree needs to be loaded into memory. In a
+future update the table will be able to handle lazy loading of nodes using
+promises.
 
 ## Within the controller
 

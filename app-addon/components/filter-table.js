@@ -25,6 +25,9 @@ export default Em.Component.extend({
       this.set('targetObject.selectedRecords', this.get('selectedRecords'));
     }
   }.on('init'),
+  isTree: false,
+  showSearchAncestors: true,
+
   /* General table settings */
   viewLimit: 20,
   columnNum: 2,
@@ -32,6 +35,7 @@ export default Em.Component.extend({
     var diff = (this.get('showCheckboxes')) ? 1 : 0;
     return this.get('columnNum') + diff;
   }.property('columnNum'),
+
   /* Elements pertaining to the input box used for filtereing results */
   showTextFilter: true,
   textFilter: "",  // The search bar at the top for filtering
@@ -52,6 +56,88 @@ export default Em.Component.extend({
     return this.get('selectedRecords.length') ===
            this.get('filteredRecords.length');
   }.property('selectedRecords.@each', 'filteredRecords.@each'),
+
+  /* Tree view settings */
+  applyTreeFilter: function(records) {
+    /* All expand/collapse logic is done here. We don't dynamically add records
+     * in the template. Instead we add them to the list here and rely on the
+     * sorting by depth first to ensure the correct order.
+     */
+    if (this.get('isTree') === false) {
+      return records;
+    }
+    function getSubtree(record) {
+      // Returns an array containing the whole subtree of the parent
+      var records = [record];
+      if (record.get('isExpanded') === true) {
+        record.get('children.content').forEach(function(child) {
+          records = records.concat(getSubtree(child));
+        });
+      }
+      return records;
+    }
+    function isAncestor(node, filterResults) {
+      var _isAncestor = false;
+      node.get('children').forEach(function(child) {
+        if (filterResults.indexOf(child) > -1) {
+          // this is a direct parent of a search result
+          _isAncestor = true;
+        }
+        if (isAncestor(child, filterResults) === true) {
+          // this child is a distant ancestor;
+          _isAncestor = true;
+        }
+      });
+      return _isAncestor;
+    }
+
+    function getAncestors(node, filterResults) {
+      var ancestors = [];
+
+
+      if (filterResults.indexOf(node) > -1) {
+        ancestors.push(node);
+      } else {
+        if (isAncestor(node, filterResults)) {
+          ancestors.push(node);
+          var childAncestors = [];
+          node.get('children').forEach(function(child) {
+            childAncestors = childAncestors.concat( getAncestors(child, filterResults));
+          });
+          ancestors = ancestors.concat(childAncestors);
+        }
+      }
+      return ancestors;
+    }
+
+    var finalGroups = Em.A([]);
+    Em.debug("If text filter is empty, display root nodes");
+    if (Em.isBlank(this.get('textFilter'))) {
+      // work off the root nodes
+      records.forEach(function(r) {
+        if (r.get('depth') < 2) {
+          finalGroups = finalGroups.concat(getSubtree(r));
+        }
+      });
+    } else {
+      if (this.get('showSearchAncestors') === false) {
+        // show only matching search results
+        finalGroups = records;
+      } else {
+        // Construct a tree containing the ancestry lines of the matching
+        // search results. We do this by traversing the tree from all the roots
+        var roots = this.get('_prefilterRecords').filterBy('depth', 1);
+
+        Em.debug('- Getting ancestry -');
+        roots.forEach(function(r) {
+          Em.debug('  %@'.fmt(r.get('name')));
+          finalGroups = finalGroups.concat(getAncestors(r, records));
+        });
+      }
+    }
+
+    return finalGroups;
+  },
 
   filteredRecords: Em.A([]), // Displayed records
   toggleAllSelection: function() {
@@ -152,10 +238,12 @@ export default Em.Component.extend({
       return;
     }
     ac = ac.toArray();  // make copy of the content record
+    this.set('_prefilterRecords', ac);
     ac = this.applyTextFilter(ac);
     if (!Em.isBlank(this.get('targetObject.applyDropdownFilter'))) {
       ac = this.get('targetObject').applyDropdownFilter(ac);
     }
+    ac = this.applyTreeFilter(ac);
     Em.debug("Showing filteredRecords");
     if (ac.get('length') > this.get('viewLimit')) {
       Em.debug("\tChopping records to viewLimit");
@@ -181,6 +269,16 @@ export default Em.Component.extend({
     },
     remove: function(actionName, record) {
       this.get('targetObject').send(actionName, record);
+    },
+    toggleExpand: function(record) {
+      Em.debug("Expanding/Collapsing record");
+      var e = record.get('isExpanded') || false;
+      if (record.get('childNum') < 1) {
+        Em.debug("Cannot expand record without children");
+        return;
+      }
+      record.set('isExpanded', !e);
+      this.set('reloadRecords', true);
     }
   }
 });

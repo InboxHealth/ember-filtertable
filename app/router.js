@@ -5,6 +5,8 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+  this.route('tree');
+  this.route('flat', {path: '/'});
 });
 
 export default Router;
