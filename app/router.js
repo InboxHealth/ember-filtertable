@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 var Router = Ember.Router.extend({
-  location: EmberFiltertableENV.locationType
+  location: EmberCliFiltertableENV.locationType
 });
 
 Router.map(function() {
