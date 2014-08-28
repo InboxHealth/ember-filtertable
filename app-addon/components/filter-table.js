@@ -70,6 +70,7 @@ export default Em.Component.extend({
       // Returns an array containing the whole subtree of the parent
       var records = [record];
       if (record.get('isExpanded') === true) {
+        // This needs to become a promise for async references
         record.get('children.content').forEach(function(child) {
           records = records.concat(getSubtree(child));
         });

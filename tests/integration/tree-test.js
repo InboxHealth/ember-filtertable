@@ -1,5 +1,6 @@
 import startApp from '../helpers/start-app';
 import { test } from 'ember-qunit';
+import Em from 'ember';
 var App;
 
 module('Tree filter', {
@@ -7,7 +8,7 @@ module('Tree filter', {
     App = startApp();
   },
   teardown: function() {
-    Ember.run(App, App.destroy);
+    Em.run(App, App.destroy);
   }
 });
 
