@@ -1,4 +1,5 @@
-#Ember CLI Filter Table
+#Ember CLI Filter Table [![Build Status](https://travis-ci.org/gevious/ember-filtertable.svg)](https://travis-ci.org/gevious/ember-filtertable)
+
 
 ## Description
 This component is an Ember CLI add-on which presents a standard html table but
