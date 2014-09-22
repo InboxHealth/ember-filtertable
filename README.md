@@ -1,7 +1,5 @@
 #Ember CLI Filter Table
 
-__Note__: This is very much still a work in progress. Use at own risk
-
 ## Description
 This component is an Ember CLI add-on which presents a standard html table but
 allows for extra options. It includes a text input box for easy filtering, as
@@ -13,7 +11,19 @@ npm install ember-cli-filtertable --save-dev
 
 ##Basic Usage
 
-  {{filter-table content=content bodyTemplate="mytable-body" headerTemplate="mytable-header"}}
+    {{filter-table content=content bodyTemplate="mytable-body"
+                   headerTemplate="mytable-header"}}
+
+## Demo
+Check out the demo on [github pages](http://gevious.github.io/ember-filtertable/ "Ember-filtertable Demo").
+Alternatively you can clone this repo and run the app
+
+    sudo npm install -g ember-cli
+    git clone git@github.com:gevious/ember-filtertable
+    cd ember-filtertable
+    npm install; bower install
+    ember serve
+
 
 ## Options
 When calling the filter table, the following options are available:
