@@ -15,8 +15,7 @@ npm install ember-cli-filtertable --save-dev
                    headerTemplate="mytable-header"}}
 
 ## Demo
-Check out the demo on [github pages](http://gevious.github.io/ember-filtertable/ "Ember-filtertable Demo").
-Alternatively you can clone this repo and run the app
+Clone this repo and run the app
 
     sudo npm install -g ember-cli
     git clone git@github.com:gevious/ember-filtertable
