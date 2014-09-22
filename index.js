@@ -1,0 +1,7 @@
+module.exports = {
+  name: 'ember-cli-filtertable',
+  included: function(app) {
+    this._super.included(app);
+    app.import('vendor/filtertable.css');
+  }
+};
