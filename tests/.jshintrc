@@ -2,8 +2,6 @@
   "predef": [
     "document",
     "selectOption",
-    "Em",
-    "Ember",
     "window",
     "location",
     "setTimeout",
@@ -37,6 +35,7 @@
     "fillIn",
     "click",
     "keyEvent",
+    "triggerEvent",
     "find",
     "findWithAssert",
     "wait",

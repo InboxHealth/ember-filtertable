@@ -1,14 +1,12 @@
-/* global require */
+import Em from 'ember';
+import Application from 'dummy/app';
+import Router from 'dummy/router';
 import selectOption from './select-option';
-
-var Application = require('ember-cli-filtertable/app')['default'];
-var Router = require('ember-cli-filtertable/router')['default'];
-import Ember from 'ember';
 
 export default function startApp(attrs) {
   var App;
 
-  var attributes = Ember.merge({
+  var attributes = Em.merge({
     // useful Test defaults
     rootElement: '#ember-testing',
     LOG_ACTIVE_GENERATION: false,
@@ -19,7 +17,7 @@ export default function startApp(attrs) {
     location: 'none'
   });
 
-  Ember.run(function() {
+  Em.run(function() {
     App = Application.create(attributes);
     App.setupForTesting();
     App.injectTestHelpers();

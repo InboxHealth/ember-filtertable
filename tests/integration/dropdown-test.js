@@ -1,5 +1,7 @@
+import Em from 'ember';
 import startApp from '../helpers/start-app';
 import { test } from 'ember-qunit';
+
 var App;
 
 module('Dropdown filter', {
@@ -7,7 +9,7 @@ module('Dropdown filter', {
     App = startApp();
   },
   teardown: function() {
-    Ember.run(App, App.destroy);
+    Em.run(App, App.destroy);
   }
 });
 
@@ -15,7 +17,7 @@ test("Filter active status", function() {
   expect(2);
   visit('/');
   andThen(function() {
-    equal(Em.$("tbody tr").length, 7);
+    equal(Em.$("tbody tr").length, 7, "7 Initial Records");
     var selector = ".spec-activeDropdown>option:nth(1)";
     selectOption(selector);
   });
