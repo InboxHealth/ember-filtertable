@@ -246,7 +246,8 @@ export default Em.Component.extend({
     }
     ac = this.applyTreeFilter(ac);
     Em.debug("Showing filteredRecords");
-    if (ac.get('length') > this.get('viewLimit')) {
+    var vl = this.get('viewLimit');
+    if (vl > 0 && ac.get('length') > this.get('viewLimit')) {
       Em.debug("\tChopping records to viewLimit");
       ac = ac.splice(0, this.get('viewLimit'));
     }

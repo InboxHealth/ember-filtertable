@@ -33,7 +33,8 @@ When calling the filter table, the following options are available:
 Type: `Number`
 Default: `20`
 
-This is the number of maximum records that will be shown in the table.
+This is the number of maximum records that will be shown in the table.  If it
+is set to 0, no limit will be enforced.
 
 #### columnNum
 Type: `Number`

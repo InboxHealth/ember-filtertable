@@ -1,17 +1,14 @@
 import Em from 'ember';
-import Application from 'dummy/app';
-import Router from 'dummy/router';
+import Application from '../../app';
+import Router from '../../router';
+import config from '../../config/environment';
 import selectOption from './select-option';
 
 export default function startApp(attrs) {
   var App;
 
-  var attributes = Em.merge({
-    // useful Test defaults
-    rootElement: '#ember-testing',
-    LOG_ACTIVE_GENERATION: false,
-    LOG_VIEW_LOOKUPS: false
-  }, attrs); // but you can override;
+  var attributes = Em.merge({}, config.APP);
+  attributes = Em.merge(attributes, attrs); // use defaults, but you can override;
 
   Router.reopen({
     location: 'none'
