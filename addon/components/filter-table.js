@@ -5,6 +5,7 @@ export default Em.Component.extend({
   layoutName: 'components/filter-table',
   selectAll: false,  // select-all button off by default
   deselectAll: false,  // toggle for deselecting all (w/o all being selected)
+  model: "",
   selectedRecords: Em.A([]),
   updateSelectedRecords: function() {
     var sr = this.get('selectedRecords'),
@@ -209,54 +210,57 @@ export default Em.Component.extend({
   hasNoActualRecords: function() {
     return this.get('content').get('length') < 1;
   }.property('content.@each'),
-  applyTextFilter: function(ac) {
-    var filter = this.get('textFilter');
-    if (!Em.isBlank(filter)) {
-      Em.debug("Applying text filter to records");
-      filter = filter.toLowerCase();
-      var ff = this.get('filterField');
-      ac = ac.filter(function(record) {
-        if (Em.isBlank(record) || Em.isBlank(record.get(ff))) {
-          return false;
+  applyTextFilter: function () {
+        var filter = this.get('textFilter');
+        var store = this.get('targetObject.store');
+        var controller = this.get('targetObject');
+        if (!Em.isBlank(filter)) {
+            Em.debug("Applying text filter to records");
+            filter = filter.toLowerCase();
+            store.find(this.get('model'), { filter_string: filter }).then(function (data) {
+                controller.set('content', data);
+            }, function (error) {
+                Em.debug("No records found");
+            });
         }
-        return record.get(ff).toLowerCase().indexOf(filter) > -1;
-      });
-    }
-    return ac;
-  },
-  loadRecords: function() {
-    Em.debug('Refreshing visible records');
-    if (this.get('_ignoreReload') === true) {
-      Em.debug("Don't reload for targetObject.reload value change");
-      this.set('_ignoreReload', false);
-      return;
-    }
-    var ac = this.get('arrangedContent') ||
-             this.get('content.arrangedContent') ||
-             this.get('content');
-    if (Em.isEmpty(ac)) {
-      this.set('filteredRecords', []);
-      return;
-    }
-    ac = ac.toArray();  // make copy of the content record
-    this.set('_prefilterRecords', ac);
-    ac = this.applyTextFilter(ac);
-    if (!Em.isBlank(this.get('targetObject.applyDropdownFilter'))) {
-      ac = this.get('targetObject').applyDropdownFilter(ac);
-    }
-    ac = this.applyTreeFilter(ac);
-    Em.debug("Showing filteredRecords");
-    var vl = this.get('viewLimit');
-    if (vl > 0 && ac.get('length') > this.get('viewLimit')) {
-      Em.debug("\tChopping records to viewLimit");
-      ac = ac.splice(0, this.get('viewLimit'));
-    }
-    this.set('filteredRecords', Em.A(ac));
-    if (this.get('reloadRecords') === true) {
-      this.set('_ignoreReload', true);
-      this.set('reloadRecords', false);
-    }
-  }.observes('textFilter', 'reloadRecords'),
+    },
+    loadRecords: function () {
+        Em.debug('Refreshing visible records');
+        if (this.get('_ignoreReload') === true) {
+            Em.debug("Don't reload for targetObject.reload value change");
+            this.set('_ignoreReload', false);
+            return;
+        }
+
+        this.applyTextFilter();
+
+        var ac = this.get('arrangedContent') ||
+            this.get('content.arrangedContent') ||
+            this.get('content');
+
+
+        if (Em.isEmpty(ac)) {
+            this.set('filteredRecords', []);
+            return;
+        }
+        // ac = ac.toArray();  // make copy of the content record
+        // this.set('_prefilterRecords', ac);
+
+        // if (!Em.isBlank(this.get('targetObject.applyDropdownFilter'))) {
+        //     ac = this.get('targetObject').applyDropdownFilter(ac);
+        // }
+        // ac = this.applyTreeFilter(ac);
+        // Em.debug("Showing filteredRecords");
+        // if (ac.get('length') > this.get('viewLimit')) {
+        //     Em.debug("\tChopping records to viewLimit");
+        //     ac = ac.splice(0, this.get('viewLimit'));
+        // }
+        this.set('filteredRecords', ac);
+        if (this.get('reloadRecords') === true) {
+            this.set('_ignoreReload', true);
+            this.set('reloadRecords', false);
+        }
+    }.observes('textFilter', 'reloadRecords'),
   loadOnContentChange: function() {
     if (Em.isEmpty(this.get('content'))) {
       return;
@@ -281,6 +285,73 @@ export default Em.Component.extend({
       }
       record.set('isExpanded', !e);
       this.set('reloadRecords', true);
-    }
+    },
+     sortBy: function (field) {
+            var propertyString = field + '_sorted';
+            var sortDirection = "";
+
+            if (propertyString == 'first_name_sorted') {
+                if (this.get('first_name_sorted') == true) {
+                    this.set('first_name_sorted', false);
+
+                }
+                else {
+                    this.set('first_name_sorted', true);
+                }
+                this.set('balance_sorted', false);
+                this.set('last_name_sorted', false);
+                this.set('date_of_birth_sorted', false);
+            }
+            else if (propertyString == 'last_name_sorted') {
+                if (this.get('last_name_sorted') == true) {
+                    this.set('last_name_sorted', false);
+                }
+                else {
+                    this.set('last_name_sorted', true);
+                }
+                this.set('balance_sorted', false);
+                this.set('first_name_sorted', false);
+                this.set('date_of_birth_sorted', false);
+            }
+            else if (propertyString == 'date_of_birth_sorted') {
+                if (this.get('date_of_birth_sorted') == true) {
+                    this.set('date_of_birth_sorted', false);
+                }
+                else {
+                    this.set('date_of_birth_sorted', true);
+                }
+                this.set('balance_sorted', false);
+                this.set('first_name_sorted', false);
+                this.set('last_name_sorted', false);
+            }
+            else if (propertyString == 'balance_sorted') {
+                if (this.get('balance_sorted') == true) {
+                    this.set('balance_sorted', false);
+                }
+                else {
+                    this.set('balance_sorted', true);
+                }
+                this.set('date_of_birth_sorted', false);
+                this.set('first_name_sorted', false);
+                this.set('last_name_sorted', false);
+            }
+
+            if (this.get(propertyString) == true) {
+                sortDirection = "DESC"
+            }
+            else
+            {
+              sortDirection = "ASC"
+            }
+
+            var store = this.get('targetObject.store');
+            var controller = this.get('targetObject');
+            store.find(this.get('model'), { sort_param: field, sort_dir: sortDirection }).then(function (data) {
+                console.log(data);
+                controller.set('content', data);
+            }, function (error) {
+                Em.debug("No records found");
+            });
+        }
   }
 });
