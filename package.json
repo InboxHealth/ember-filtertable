@@ -1,5 +1,5 @@
 {
-  "name": "ember-cli-filtertable",
+  "name": "ember-cli-filtertable-inbox-health",
   "version": "1.1.0",
   "description": "A HTML table with some added controls",
   "directories": {
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gevious/ember-filtertable"
+    "url": "https://github.com/InboxHealth/ember-filtertable"
   },
   "engines": {
     "node": ">= 0.10.0"
@@ -31,7 +31,7 @@
   "bugs": {
     "url": "https://github.com/gevious/ember-filtertable/issues"
   },
-  "homepage": "https://github.com/gevious/ember-filtertable",
+  "homepage": "https://github.com/InboxHealth/ember-filtertable",
   "devDependencies": {
     "body-parser": "^1.2.0",
     "broccoli-asset-rev": "0.3.0",
