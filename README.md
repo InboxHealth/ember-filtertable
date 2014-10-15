@@ -7,7 +7,7 @@ well as hooks for dropdown filtering. It also allows for extra buttons in the
 header which can activate/deactivate based on selections in the table.
 
 ## Installation
-npm install ember-cli-filtertable --save-dev
+npm install ember-cli-filtertable-inbox-health --save-dev
 
 ##Basic Usage
 
