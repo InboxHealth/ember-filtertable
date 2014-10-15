@@ -1,4 +1,4 @@
 import Em from 'ember';
-import Treetab from 'ember-cli-filtertable/helpers/tree-tab';
+import Treetab from 'ember-cli-filtertable-inbox-health/helpers/tree-tab';
 
 export default Treetab;

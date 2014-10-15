@@ -290,58 +290,14 @@ export default Em.Component.extend({
             var propertyString = field + '_sorted';
             var sortDirection = "";
 
-            if (propertyString == 'first_name_sorted') {
-                if (this.get('first_name_sorted') == true) {
-                    this.set('first_name_sorted', false);
-
-                }
-                else {
-                    this.set('first_name_sorted', true);
-                }
-                this.set('balance_sorted', false);
-                this.set('last_name_sorted', false);
-                this.set('date_of_birth_sorted', false);
-            }
-            else if (propertyString == 'last_name_sorted') {
-                if (this.get('last_name_sorted') == true) {
-                    this.set('last_name_sorted', false);
-                }
-                else {
-                    this.set('last_name_sorted', true);
-                }
-                this.set('balance_sorted', false);
-                this.set('first_name_sorted', false);
-                this.set('date_of_birth_sorted', false);
-            }
-            else if (propertyString == 'date_of_birth_sorted') {
-                if (this.get('date_of_birth_sorted') == true) {
-                    this.set('date_of_birth_sorted', false);
-                }
-                else {
-                    this.set('date_of_birth_sorted', true);
-                }
-                this.set('balance_sorted', false);
-                this.set('first_name_sorted', false);
-                this.set('last_name_sorted', false);
-            }
-            else if (propertyString == 'balance_sorted') {
-                if (this.get('balance_sorted') == true) {
-                    this.set('balance_sorted', false);
-                }
-                else {
-                    this.set('balance_sorted', true);
-                }
-                this.set('date_of_birth_sorted', false);
-                this.set('first_name_sorted', false);
-                this.set('last_name_sorted', false);
-            }
-
             if (this.get(propertyString) == true) {
                 sortDirection = "DESC"
+                this.set(propertyString, false);
             }
             else
             {
               sortDirection = "ASC"
+              this.set(propertyString, true);
             }
 
             var store = this.get('targetObject.store');
