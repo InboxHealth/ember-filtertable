@@ -214,6 +214,7 @@ export default Em.Component.extend({
         var filter = this.get('textFilter');
         var store = this.get('targetObject.store');
         var controller = this.get('targetObject');
+        this.set('_ignoreReload', true);
         if (!Em.isBlank(filter)) {
             Em.debug("Applying text filter to records");
             filter = filter.toLowerCase();
@@ -223,9 +224,17 @@ export default Em.Component.extend({
                 Em.debug("No records found");
             });
         }
+        else{
+            store.find(this.get('model')).then(function (data) {
+                controller.set('content', data);
+            }, function (error) {
+                Em.debug("No records found");
+            });
+        }
     },
     loadRecords: function () {
         Em.debug('Refreshing visible records');
+
         if (this.get('_ignoreReload') === true) {
             Em.debug("Don't reload for targetObject.reload value change");
             this.set('_ignoreReload', false);
@@ -246,16 +255,19 @@ export default Em.Component.extend({
         // ac = ac.toArray();  // make copy of the content record
         // this.set('_prefilterRecords', ac);
 
-        // if (!Em.isBlank(this.get('targetObject.applyDropdownFilter'))) {
-        //     ac = this.get('targetObject').applyDropdownFilter(ac);
-        // }
-        // ac = this.applyTreeFilter(ac);
-        // Em.debug("Showing filteredRecords");
-        // if (ac.get('length') > this.get('viewLimit')) {
-        //     Em.debug("\tChopping records to viewLimit");
-        //     ac = ac.splice(0, this.get('viewLimit'));
-        // }
+        if (!Em.isBlank(this.get('targetObject.applyDropdownFilter'))) {
+            ac = this.get('targetObject').applyDropdownFilter(ac);
+        }
+
+         ac = this.applyTreeFilter(ac);
+         Em.debug("Showing filteredRecords");
+         var vl = this.get('viewLimit');
+         if (vl > 0 && ac.get('length') > this.get('viewLimit')) {
+           Em.debug("\tChopping records to viewLimit");
+           ac = ac.splice(0, this.get('viewLimit'));
+        }
         this.set('filteredRecords', ac);
+
         if (this.get('reloadRecords') === true) {
             this.set('_ignoreReload', true);
             this.set('reloadRecords', false);
@@ -276,6 +288,9 @@ export default Em.Component.extend({
     remove: function(actionName, record) {
       this.get('targetObject').send(actionName, record);
     },
+    showModal: function(actionName, record) {
+          this.sendAction('onShowModal', actionName, record);
+     },
     toggleExpand: function(record) {
       Em.debug("Expanding/Collapsing record");
       var e = record.get('isExpanded') || false;
@@ -303,7 +318,6 @@ export default Em.Component.extend({
             var store = this.get('targetObject.store');
             var controller = this.get('targetObject');
             store.find(this.get('model'), { sort_param: field, sort_dir: sortDirection }).then(function (data) {
-                console.log(data);
                 controller.set('content', data);
             }, function (error) {
                 Em.debug("No records found");
