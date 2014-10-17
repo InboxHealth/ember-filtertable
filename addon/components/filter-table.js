@@ -259,13 +259,14 @@ export default Em.Component.extend({
             ac = this.get('targetObject').applyDropdownFilter(ac);
         }
 
-         ac = this.applyTreeFilter(ac);
-         Em.debug("Showing filteredRecords");
-         var vl = this.get('viewLimit');
-         if (vl > 0 && ac.get('length') > this.get('viewLimit')) {
-           Em.debug("\tChopping records to viewLimit");
-           ac = ac.splice(0, this.get('viewLimit'));
-        }
+        //  ac = this.applyTreeFilter(ac);
+        //  Em.debug("Showing filteredRecords");
+        //  var vl = this.get('viewLimit');
+        //  if (vl > 0 && ac.get('length') > this.get('viewLimit')) {
+        //    Em.debug("\tChopping records to viewLimit");
+        //    ac = ac.splice(0, this.get('viewLimit'));
+        // }
+        
         this.set('filteredRecords', ac);
 
         if (this.get('reloadRecords') === true) {
